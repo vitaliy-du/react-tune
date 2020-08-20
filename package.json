@@ -1,0 +1,24 @@
+{
+  "name": "react-tune",
+  "version": "1.0.5",
+  "description": "Allows a parent component to modify his children before render.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitaliy-du/react-tune.git"
+  },
+  "author": "Vitaliy Dyukar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vitaliy-du/react-tune/issues"
+  },
+  "homepage": "https://github.com/vitaliy-du/react-tune#readme",
+  "types": "index.d.ts",
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  }
+}
