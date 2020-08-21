@@ -1,7 +1,7 @@
 ReactTune
 ===========
 
-[![Version](http://img.shields.io/npm/v/react-tune.svg)](https://www.npmjs.org/package/classnames)
+[![Version](http://img.shields.io/npm/v/react-tune.svg)](https://www.npmjs.org/package/react-tune)
 
 Allows a parent component to modify his children before render.
 
