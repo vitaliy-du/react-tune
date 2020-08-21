@@ -9,14 +9,14 @@ Object(React).createElement = (type, p, ...c) => {
     if (props && props['tune']) {
         const {tune, ...rest} = props;
         if (typeof type === 'string') props = rest;
-        const tuneUse = tune['use'];
-        if (tuneUse) {
+        const tuneIt = tune['it'];
+        if (tuneIt) {
             const tuneName = tune['name'];
-            if (typeof tuneUse === 'function') {
-                result = tuneUse(tuneName, props, children);
+            if (typeof tuneIt === 'function') {
+                result = tuneIt(tuneName, props, children);
             } else {
-                result = tuneUse['tune'] && tuneUse['tune'](tuneName, props, children);
-                const propsTune = tuneUse['props'] && tuneUse['props']['tune'];
+                result = tuneIt['tune'] && tuneIt['tune'](tuneName, props, children);
+                const propsTune = tuneIt['props'] && tuneIt['props']['tune'];
                 const elem = propsTune && propsTune['use'] && propsTune['use'](tuneName, props, children);
                 if (elem !== undefined) result = elem;
             }

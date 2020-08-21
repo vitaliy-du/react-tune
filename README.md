@@ -18,52 +18,87 @@ npm install react-tune --save
 import * as React from "react";
 import * as ReactTune from "react-tune";
 
-class SomeComponent extends ReactTune.Component {
-    render(): React.ReactNode {
-        return (
-            <div tune={{name: 'SomeComponent.main', use: this}}>
-                <span tune={{name: 'SomeComponent.span1', use: this}}>SPAN1</span>
-                <span tune={{name: 'SomeComponent.span2', use: this}}>SPAN2</span>
-                {this.props.children}
-                <span tune={{name: 'divEx.span3', use: this}}>SPAN3</span>
-            </div>
-        );
-    }
+class BaseComponent extends ReactTune.Component<{label: string}> {
+	render(): React.ReactNode {
+		return (
+			<div tune={{name: 'BaseComponent.main', it: this}}>
+				<span style={{color: '#aaa', fontSize: '12px'}}>{`${this.props.label} - `}</span>
+				<span tune={{name: 'BaseComponent.span1', it: this}}>SPAN1</span>
+				<span tune={{name: 'BaseComponent.span2', it: this}}>SPAN2</span>
+				<span tune={{name: 'BaseComponent.span3', it: this}}>SPAN3</span>
+			</div>
+		);
+	}
 }
-class SomeComponentEx extends SomeComponent {
-    tune(name: string, props: any, children: React.ReactNode[]): ReactTune.ReactNode {
-        if (name == 'SomeComponent.span2') {
-            props.style = {color: 'green'};
-        }
-    }
+
+class BaseComponentTuned extends BaseComponent {
+	tune(name: string, props: any, children: React.ReactNode[]): ReactTune.ReactNode {
+		switch (name) {
+			case 'BaseComponent.span2': {
+				props.style = {...props.style, color: 'green'};
+				break;
+			}
+			case 'BaseComponent.main': {
+				children.push(<span tune={{name: 'BaseComponent.span4', it: this}}>SPAN4</span>);
+			}
+		}
+	}
+}
+
+class PairComponent extends ReactTune.Component<{label: string}> {
+	render(): React.ReactNode {
+		return (
+			<>
+				<BaseComponent
+					label={`${this.props.label} - BaseComponent`}
+					tune={{name: 'PairComponent.BaseComponent', it: this}}
+				/>
+				<BaseComponentTuned
+					label={`${this.props.label} - BaseComponentTuned`}
+					tune={{name: 'PairComponent.BaseComponentTuned', it: this}}
+				/>
+			</>
+		);
+	}
 }
 
 class Main extends React.Component {
-    render(): React.ReactNode {
-        return (
-            <div>
-                <SomeComponent
-                    tune={{name: 'Main.SomeComponent', use: (name, props, children: React.ReactNode[]) => {
-                        if (name == 'SomeComponent.span2') {
-                            props.style = {color: 'red'};
-                        }
-                    }}}
-                >
-                    {' CHILDREN '}
-                </SomeComponent>
-                <SomeComponentEx />
-                <SomeComponentEx
-                    tune={{use: (name, props) => {
-                        if (name == 'SomeComponent.span2') {
-                            props.style.display = 'inline-block';
-                            props.style.color = 'blue';
-                            return <div {...props}>{'DIV'}</div>;
-                        }
-                    }}}
-                />
-            </div>
-        );
-    }
+	render(): React.ReactNode {
+		return (
+			<div>
+				<BaseComponent
+					label={'BaseComponent tuned'}
+					tune={{it: this, name: 'Main.BaseComponent', use: (name, props, children: React.ReactNode[]) => {
+						if (name == 'BaseComponent.span2') {
+							props.style = {...props.style, color: 'red'};
+						}
+					}}}
+				/>
+				<BaseComponentTuned label={'BaseComponentTuned'} />
+				<BaseComponentTuned label={'BaseComponentTuned tuned'}
+					tune={{it: this, name: 'Main.BaseComponentTuned', use: (name, props) => {
+						if (name == 'BaseComponent.span2') {
+							props.style = {...props.style, color: 'blue', display: 'inline-block'};
+							return <div {...props}>{'DIV'}</div>;
+						}
+					}}}
+				/>
+				<PairComponent label={'Pair'} />
+				<PairComponent
+					label={'Pair tuned'}
+					tune={{it: this, name: 'Main.PairComponent', use: (name, props) => {
+						if (name == 'PairComponent.BaseComponentTuned') {
+							props.tune = {...props.tune, use: (childName: string, childProps: any) => {
+								if (childName == 'BaseComponent.span4') {
+									childProps.style = {...props.style, fontWeight: 'bold'};
+								}
+							}};
+						}
+					}}}
+				/>
+			</div>
+		);
+	}
 }
 
 ```
